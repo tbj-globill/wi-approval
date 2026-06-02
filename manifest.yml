@@ -1,0 +1,49 @@
+modules:
+  jira:globalPage:
+    - key: approval-jira-page
+      title: WI Approval (Jira)
+      resource: main-frontend
+      render: native
+      resolver:
+        function: resolver
+  confluence:contentBylineItem:
+    - key: approval-byline
+      title: WI Approval
+      resource: main-frontend
+      render: native
+      resolver:
+        function: resolver
+
+  confluence:globalSettings:
+    - key: approval-settings
+      title: WI Approval Settings
+      resource: main-frontend
+      render: native
+      resolver:
+        function: resolver
+
+  function:
+    - key: resolver
+      handler: index.handler
+
+resources:
+  - key: main-frontend
+    path: src/frontend/index.jsx # <-- IMPORTANT: Update this path to point to your actual React entry point (e.g., src/index.jsx)
+
+permissions:
+  scopes:
+    - storage:app
+    - read:confluence-content.all
+    - read:confluence-user
+    - read:jira-work
+    - write:jira-work
+  external:
+    fetch:
+      backend:
+        - address: globe-api-staging-732869802745.europe-west1.run.app
+app:
+  runtime:
+    name: nodejs24.x
+    memoryMB: 256
+    architecture: arm64
+  id: ari:cloud:ecosystem::app/3ac02c43-e64a-4dd9-8470-8928bdf9435a
