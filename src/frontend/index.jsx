@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ForgeReconciler, { Button, ButtonGroup, Inline, Spinner, Stack, useProductContext } from '@forge/react';
+import ForgeReconciler, { Button, Box, ButtonGroup, Text, Inline, Spinner, Stack, useProductContext } from '@forge/react';
 import { ApproversTable } from './Approvers';
 import { ApproversManagers } from './ApproversManager';
 import { invoke } from '@forge/bridge';
@@ -18,6 +18,7 @@ const App = () => {
     const [activeView, setActiveView] = useState('table');
 	const [approvalData, setApprovalData] = useState([])
 	const [loggedInAccountId, setLoggedInAccountId] = useState(null)
+    const [isPageOwner, setIsPageOwner] = useState(null)
 	const [metaData, setMetaData] = useState({ jiraKey: "...", createdAt: "..." })
 
 	useEffect(() => {
@@ -26,6 +27,9 @@ const App = () => {
 
 		async function loadDataBridgePayload() {
 			try {
+                const response = await invoke('fetchPageOwner', { pageId, accountId });
+                setIsPageOwner(response.isPageOwner); 
+
 				const result = await invoke("fetchApprovers", { clientPageId: pageId })
 
 				if (result?.success && result.mockData) {
@@ -55,6 +59,14 @@ const App = () => {
 		loadDataBridgePayload()
 	}, [pageId, accountId])
 
+    if (isPageOwner === null) {
+        return (
+            <Box>
+                <Spinner size="medium" label='Validating page ownership...' />
+            </Box>
+        );
+    }
+
     return (
         <Stack space='space.200'>
             <ButtonGroup>
@@ -68,6 +80,7 @@ const App = () => {
                 <Button 
                     appearance={activeView === 'manage' ? 'primary' : 'default'} 
                     onClick={() => setActiveView(VIEWS.MANAGE)}
+                    isDisabled={!isPageOwner}
                 >
                     Manage Approvers
                 </Button>

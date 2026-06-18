@@ -1,11 +1,4 @@
 modules:
-  jira:globalPage:
-    - key: approval-jira-page
-      title: WI Approval (Jira)
-      resource: main-frontend
-      render: native
-      resolver:
-        function: resolver
   confluence:contentBylineItem:
     - key: approval-byline
       title: WI Approval
@@ -13,6 +6,8 @@ modules:
       render: native
       resolver:
         function: resolver
+      unlicensedAccess:
+        - unlicensed
 
   confluence:globalSettings:
     - key: approval-settings
@@ -34,13 +29,19 @@ permissions:
   scopes:
     - storage:app
     - read:confluence-content.all
+    - read:page:confluence
     - read:confluence-user
+    - read:space:confluence
+    - read:content-details:confluence
     - read:jira-work
-    - write:jira-work
+    - read:confluence-groups        # <-- add this
+    - write:confluence-content      # <-- if the app writes approval status
+    - read:confluence-props         # <-- if the app reads/writes content properties for approval status
   external:
     fetch:
       backend:
-        - address: globe-api-staging-732869802745.europe-west1.run.app
+        - address: globe-api-staging-121809622543.asia-east1.run.app
+  scopes: []
 app:
   runtime:
     name: nodejs24.x

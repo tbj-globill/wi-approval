@@ -186,7 +186,7 @@ export const ApproversManagers = ({ onCancel }) => {
         <Button 
           appearance="primary" 
           onClick={handleConfirm}
-          isDisabled={!jiraKey || searchStatus !== "success" || approverList.length === 0}
+          isDisabled={!jiraKey || approverList.length === 0}
         >
           Confirm
         </Button>

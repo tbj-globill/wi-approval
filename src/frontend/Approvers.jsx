@@ -22,57 +22,58 @@ const head = {
     ]
 }
 
-export const ApproversTable = ({ data }) => {
+export const ApproversTable = () => {
     const context = useProductContext();
     const pageId = context?.extension?.content?.id;
     const accountId = context?.accountId;
 
-    // const [data, setData] = useState([]);
+    const [data, setData] = useState([]);
     const [loggedInAccountId, setLoggedInAccountId] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const [metaData, setMetaData] = useState({ jiraKey: "...", createdAt: "..." })
 
-    // useEffect(() => {
-    //     if (!pageId || !accountId) return;
+    useEffect(() => {
+        if (!pageId || !accountId) return;
 
-    //     setLoggedInAccountId(accountId);
+        setLoggedInAccountId(accountId);
 
-    //     async function loadDataBridgePayload() {
-    //         try {
-    //             const result = await invoke("fetchApprovers", { clientPageId: pageId });
+        async function loadDataBridgePayload() {
+            try {
+                const result = await invoke("fetchApprovers", { clientPageId: pageId });
 
-    //             if (result?.success && result.mockData) {
-    //                 const payload = result.mockData;
+                if (result?.success && result.mockData) {
+                    const payload = result.mockData;
 
-    //                 // Mapping string statuses to numeric types: 0 = Pending, 1 = Approved, 2 = Rejected
-    //                 const normalizedApprovers = payload.approvers.map(approver => ({
-    //                     id: approver.id,
-    //                     name: approver.name,
-    //                     status: approver.status === "Approved" ? 1 : approver.status === "Rejected" ? 2 : 0 
-    //                 }));
+                    // Mapping string statuses to numeric types: 0 = Pending, 1 = Approved, 2 = Rejected
+                    const normalizedApprovers = payload.approvers.map(approver => ({
+                        id: approver.id,
+                        name: approver.name,
+                        status: approver.status === "Approved" ? 1 : approver.status === "Rejected" ? 2 : 0 
+                    }));
 
-    //                 setMetaData({
-    //                     jiraKey: payload.jiraKey,
-    //                     createdAt: payload.createdAt
-    //                 });
+                    setMetaData({
+                        jiraKey: payload.jiraKey,
+                        createdAt: payload.createdAt
+                    });
 
-    //                 setData(normalizedApprovers);
-    //             }
-    //         } catch (err) {
-    //             console.error("Data bridge exchange failed:", err);
-    //         } finally {
-    //             setIsLoading(false);
-    //         }
-    //     }
+                    setData(normalizedApprovers);
+                }
+            } catch (err) {
+                console.error("Data bridge exchange failed:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        }
 
-    //     loadDataBridgePayload();
-    // }, [pageId, accountId]);
+        loadDataBridgePayload();
+    }, [pageId, accountId]);
 
     const handleApprove = async (id, status) => {
         // 1. Optimistically update the UI to Approved (1)
         console.log('📡 [Frontend] Invoking handleUserApproval with:', metaData.jiraKey, id);
         
         try {
+            console.log(pageId)
             const result = await invoke("handleUserApproval", {
                 parentKey: metaData.jiraKey,
                 accountId: id,

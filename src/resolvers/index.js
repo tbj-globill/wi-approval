@@ -7,7 +7,7 @@ resolver.define("handleUserApproval", async(req) => {
     try {
         const { parentKey, accountId, pageId, status } = req.payload
 
-        const externalApiUrl = `https://globe-api-staging-732869802745.europe-west1.run.app/public/forge/wi-approval/trigger-approval/${pageId}`
+        const externalApiUrl = `https://globe-api-staging-121809622543.asia-east1.run.app/public/forge/wi-aproval/trigger-approval/${pageId}`
         const apiPayload = {
             accountId: accountId,
             status: status // "Approved" or "Rejected"
@@ -17,7 +17,8 @@ resolver.define("handleUserApproval", async(req) => {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: apiPayload ? JSON.stringify(apiPayload) : null
         })
 
         return { success: true }
@@ -56,7 +57,7 @@ resolver.define('saveApprovers', async (req) => {
     const payload = req.payload;
     
     // Replace '/api/approvals' with your exact downstream application route if different
-    const externalApiUrl = 'https://globe-api-staging-732869802745.europe-west1.run.app/public/forge/wi-approval';
+    const externalApiUrl = 'https://globe-api-staging-121809622543.asia-east1.run.app/public/forge/wi-approval';
 
     try {
         console.log('[Forge Backend] Received payload from UI, forwarding to Cloud Run...');
@@ -95,7 +96,7 @@ resolver.define('fetchApprovers', async (req) => {
   console.log(`[Data Bridge] Fetching live data from Cloud Run for page: ${clientPageId}`);
 
   // Construct the absolute path pointing to your controller's GET router matching the page ID
-  const externalApiUrl = `https://globe-api-staging-732869802745.europe-west1.run.app/public/forge/wi-approval/2288320522`;
+  const externalApiUrl = `https://globe-api-staging-121809622543.asia-east1.run.app/public/forge/wi-approval/2288320522`;
 
   try {
     const response = await api.fetch(externalApiUrl, {
@@ -137,6 +138,23 @@ resolver.define('fetchApprovers', async (req) => {
       error: error.message
     };
   }
+});
+resolver.define('fetchPageOwner', async ({ payload }) => {
+    const { pageId, accountId } = payload;
+
+    const externalApiUrl = `https://globe-api-staging-121809622543.asia-east1.run.app/public/forge/wi-approval/validate-page-owner/${pageId}/${accountId}`;
+
+    const response = await api.fetch(externalApiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+    })
+
+    const data = await response.json()
+
+    return data
 });
 
 export default resolver
