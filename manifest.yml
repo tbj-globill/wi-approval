@@ -28,20 +28,11 @@ resources:
 permissions:
   scopes:
     - storage:app
-    - read:confluence-content.all
-    - read:page:confluence
-    - read:confluence-user
-    - read:space:confluence
-    - read:content-details:confluence
     - read:jira-work
-    - read:confluence-groups        # <-- add this
-    - write:confluence-content      # <-- if the app writes approval status
-    - read:confluence-props         # <-- if the app reads/writes content properties for approval status
   external:
     fetch:
       backend:
         - address: globe-api-staging-121809622543.asia-east1.run.app
-  scopes: []
 app:
   runtime:
     name: nodejs24.x

@@ -96,7 +96,7 @@ resolver.define('fetchApprovers', async (req) => {
   console.log(`[Data Bridge] Fetching live data from Cloud Run for page: ${clientPageId}`);
 
   // Construct the absolute path pointing to your controller's GET router matching the page ID
-  const externalApiUrl = `https://globe-api-staging-121809622543.asia-east1.run.app/public/forge/wi-approval/2288320522`;
+  const externalApiUrl = `https://globe-api-staging-121809622543.asia-east1.run.app/public/forge/wi-approval/${clientPageId}`;
 
   try {
     const response = await api.fetch(externalApiUrl, {
